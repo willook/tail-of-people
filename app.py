@@ -39,6 +39,8 @@ if "file_path" not in st.session_state:
     st.session_state.file_path = None
 if "reviews_5_resumes" not in st.session_state:
     st.session_state.reviews_5_resumes = None
+if "last_uploaded_file" not in st.session_state:
+    st.session_state.last_uploaded_file = None
 
 # 📌 포지션 선택 라디오 버튼
 selected_position = st.radio(
@@ -50,6 +52,18 @@ st.session_state.selected_position = positions[selected_position]
 
 # 📌 파일 업로드 (PDF 파일만 허용)
 uploaded_file = st.file_uploader("이력서 파일을 업로드하세요", type=["pdf"])
+
+# 새로운 파일이 업로드되면 이전 분석 결과 초기화
+if uploaded_file is not None and (
+    st.session_state.last_uploaded_file != uploaded_file.name
+):
+    st.session_state.resume_text = None
+    st.session_state.review_result = None
+    st.session_state.elapsed_time = None
+    st.session_state.saved_file_path = None
+    st.session_state.file_path = None
+    st.session_state.reviews_5_resumes = None
+    st.session_state.last_uploaded_file = uploaded_file.name
 
 if uploaded_file is not None and st.session_state.resume_text is None:
     # 📌 업로드된 PDF 파일 저장
@@ -190,4 +204,5 @@ if st.session_state.review_result is not None:
         st.session_state.saved_file_path = None
         st.session_state.file_path = None
         st.session_state.reviews_5_resumes = None
+        st.session_state.last_uploaded_file = None
         st.rerun()
